@@ -151,9 +151,13 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+week_0_env/
 
 # mkdocs documentation
 /site
 
 # mypy
 .mypy_cache/
+
+#working data
+data/

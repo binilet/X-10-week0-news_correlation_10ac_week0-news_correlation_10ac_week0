@@ -10,17 +10,17 @@ from time import sleep
 
 
 
-# Create wrapper classes for using slack_sdk in place of slacker
-class SlackDataLoader:
+# Create wrapper classes for using news_sdk in place of newser
+class NewsDataLoader:
     '''
-    Slack exported data IO class.
+    news exported data IO class.
 
-    When you open slack exported ZIP file, each channel or direct message 
+    When you open news exported ZIP file, each channel or direct message 
     will have its own folder. Each folder will contain messages from the 
     conversation, organised by date in separate JSON files.
 
     You'll see reference files for different kinds of conversations: 
-    users.json files for all types of users that exist in the slack workspace
+    users.json files for all types of users that exist in the news workspace
     channels.json files for public channels, 
     
     These files contain metadata about the conversations, including their names and IDs.
@@ -30,11 +30,11 @@ class SlackDataLoader:
     '''
     def __init__(self, path):
         '''
-        path: path to the slack exported data folder
+        path: path to the news exported data folder
         '''
         self.path = path
         self.channels = self.get_channels()
-        self.users = self.get_ussers()
+        self.users = self.get_users()
     
 
     def get_users(self):
@@ -77,7 +77,7 @@ class SlackDataLoader:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Export Slack history')
+    parser = argparse.ArgumentParser(description='Export news history')
 
     
     parser.add_argument('--zip', help="Name of a zip file to import")

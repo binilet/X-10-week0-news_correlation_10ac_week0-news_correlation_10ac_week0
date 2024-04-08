@@ -1,9 +1,9 @@
 
-# Network Analysis Python Package
+# IMPORTANCE OF NEWS HEADLINE ANALYSIS
 
 ## Overview
 
-This Python package, `network_analysis`, is designed for conducting network analysis task. It provides tools and utilities to analyze network data, with a focus on handling Slack messages from a previous 10 Academy training program.
+This Python package, `news correlation`, is designed for  analysis of sentiment, topic, and reporting correlation among various global media agencies
 
 ## What to do
 
@@ -13,9 +13,9 @@ Consider this initial code as a foundation for your solution, but do not rely on
 
 As you commence your work, focus on exploring the dataset to gain a deep understanding of its structure and contents. Attempt to answer various intriguing questions that arise during your exploration.
 
-For guidance on the specific questions to address, refer to the notebooks/parse_slack_data.ipynb notebook, where you'll find empty cells designed for your responses. Utilize these cells to document your findings, insights, and any challenges encountered.
+For guidance on the specific questions to address, refer to the notebooks/parse_news_data.ipynb notebook, where you'll find empty cells designed for your responses. Utilize these cells to document your findings, insights, and any challenges encountered.
 
-Remember, this is an iterative process, and refining your code and analyses is a crucial part of the learning experience. Regularly post question on slack, and don't hesitate to reach out to tutors if you encounter difficulties. Best of luck with your exploration and analysis!
+Remember, this is an iterative process, and refining your code and analyses is a crucial part of the learning experience. Regularly post question on news, and don't hesitate to reach out to tutors if you encounter difficulties. Best of luck with your exploration and analysis!
 
 ## Table of Contents
 
@@ -124,8 +124,8 @@ from src.loader import DataLoader
 # Initialize DataLoader
 data_loader = DataLoader()
 
-# Load data from a Slack channel
-slack_data = data_loader.load_slack_data("path/to/slack_channel_data")
+# Load data from a news channel
+news_data = data_loader.load_news_data("path/to/news_channel_data")
 ```
 
 ## Utilities
@@ -137,7 +137,7 @@ Example:
 from src.utils import clean_data, visualize_network
 
 # Clean the loaded data
-cleaned_data = clean_data(slack_data)
+cleaned_data = clean_data(news_data)
 
 # Visualize the network
 visualize_network(cleaned_data)
@@ -164,13 +164,6 @@ Contributions are welcome! Before contributing, please review our contribution g
 ##  License
 This project is licensed under the MIT License.
 
-## Network Analysis
-
-This is a starter python package to analze the slack data to learn about
-
-* Patter of users messaging behaviour
-* Patter of replies and reactions of users to messages posted both by peers and admins
-* Discover sub-communities by building network graphs of message senders and those who reply or react to those messages
 
 
 
