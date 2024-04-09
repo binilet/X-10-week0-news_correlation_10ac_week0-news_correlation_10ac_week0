@@ -12,12 +12,11 @@ import seaborn as sns
 from nltk.corpus import stopwords
 
 
-# from loader import NewsDataLoader
-# loader = NewsDataLoader()
-
-# _news_data = loader.load_data('../data/rating.csv')
 
 def find_top_websites(data,url_column='url',top=10):
+    """
+        this function will get the top [top] websites with highest article counts
+    """
     data['domain'] = data[url_column].apply(lambda x: x.split('/')[2])
 
     #count occurences of each domain
@@ -25,3 +24,14 @@ def find_top_websites(data,url_column='url',top=10):
 
     top_domains = domain_counts.head(top)
     return top_domains
+
+def find_high_traffic_websites(data,top=10):
+    """
+    this function will return websites with high reference ips(assuming the ips are the number of traffic)
+    """
+
+    print(data.head(2))
+    traffic_per_domain = data.groupby(['Domain'])['RefIPs'].sum()
+    traffic_per_domain = traffic_per_domain.sort_values(ascending=False)
+    return traffic_per_domain.head(top)
+
