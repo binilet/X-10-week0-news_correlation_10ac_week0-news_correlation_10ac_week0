@@ -159,17 +159,19 @@ def keyword_extraction_and_analysis(news_data):
     similarity_list = []
 
     MIN_WORDS_THRESHOLD = 5  # Adjust as needed
-    article_count = 0
+    article_count = 0 #perform for the first 10 articles for now
     # Process each news item
     for index, row in news_data.iterrows():
         # Preprocess text (lowercase, remove punctuation, tokenize)
 
-        if(article_count == 10): break
-        print(article_count)
+        if(article_count == 101): break
+        
         title_text = row['title']
+       
         # Preprocess text (lowercase, remove punctuation, tokenize)
         processed_title = [word.lower() for word in word_tokenize(title_text) if word.lower() not in stop_words and word.isalpha()]
         content_text = row['content']
+       
         processed_content = [word.lower() for word in word_tokenize(content_text) if word.lower() not in stop_words and word.isalpha()]
 
         if len(processed_title) < MIN_WORDS_THRESHOLD and len(processed_content) < MIN_WORDS_THRESHOLD:
@@ -177,14 +179,14 @@ def keyword_extraction_and_analysis(news_data):
 
         # Combine title and content for TF-IDF analysis
         combined_text = ' '.join(processed_title + processed_content)
-        print('starting process ...')
+       
         # Fit vectorizer to combined text
         vectorizer.fit([combined_text])
 
         # Extract TF-IDF scores for the current article
         tfidf_scores = vectorizer.transform([combined_text]).toarray()[0]
         
-        print(tfidf_scores)
+        
         
         # Get feature names (words)
         feature_names = vectorizer.get_feature_names_out()
@@ -193,14 +195,19 @@ def keyword_extraction_and_analysis(news_data):
         top_keywords_title = [keyword for keyword, _ in sorted(zip(feature_names, tfidf_scores), key=lambda x: x[1], reverse=True)[:5]]
         top_keywords_content = [keyword for keyword, _ in sorted(zip(feature_names, tfidf_scores), key=lambda x: x[1], reverse=True)[5:10]]
 
-        print(top_keywords_title)
-        print(top_keywords_content)
+       
 
-        # Append top keywords to lists
-        title_keywords_list.append(top_keywords_title)
-        content_keywords_list.append(top_keywords_content)
+       
+
+        
+
 
         if(len(tfidf_scores) >= 10):
+
+             # Append top keywords to lists
+            title_keywords_list.append(top_keywords_title)
+            content_keywords_list.append(top_keywords_content)
+
             # Calculate cosine similarity between title and content keywords
             title_tfidf_scores = tfidf_scores[:5]
             content_tfidf_scores = tfidf_scores[5:10]
@@ -208,10 +215,12 @@ def keyword_extraction_and_analysis(news_data):
             
 
             similarity = 1 - cosine(title_tfidf_scores, content_tfidf_scores)
+            
             similarity_list.append(similarity)
+            article_count = article_count+1
         else:
             print('can not caluclate similarty on unbalanced keywords')
         
-        article_count = article_count+1
+        
 
     return title_keywords_list, content_keywords_list, similarity_list
