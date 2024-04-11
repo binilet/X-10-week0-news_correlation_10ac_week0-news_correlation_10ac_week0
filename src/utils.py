@@ -8,10 +8,16 @@ from nltk import pos_tag,ne_chunk
 from collections import Counter
 from multiprocessing import Pool
 from tqdm import tqdm
-from numpy import ndarray
-# from loader import NewsDataLoader
 
-# _loader = NewsDataLoader()
+#imports for task-2
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from sklearn.feature_extraction.text import TfidfVectorizer
+from scipy.spatial.distance import cosine
+
+import numpy as np
+
+
 
 
 
@@ -134,3 +140,64 @@ def website_sentiment_distribution(data):
     print("Sentiment counts with mean and median:")
     print(sentiment_counts)
     return sentiment_counts
+
+
+#task two topic modeling and sentiment analysis
+
+
+def keyword_extraction_and_analysis(news_data):
+    nltk.download('stopwords')
+    # Define stop words (English in this example)
+    stop_words = set(stopwords.words('english'))
+
+    # Create TF-IDF vectorizer
+    vectorizer = TfidfVectorizer(max_features=10)  # Adjust max_features for desired number of keywords
+
+    # Initialize lists to store keywords and similarities
+    title_keywords_list = []
+    content_keywords_list = []
+    similarity_list = []
+
+    # Process each news item
+    for index, row in news_data.iterrows():
+        # Preprocess text (lowercase, remove punctuation, tokenize)
+
+        print(row['title'])
+
+        title_text = row['title']
+
+        # Preprocess text (lowercase, remove punctuation, tokenize)
+        processed_title = [word.lower() for word in word_tokenize(title_text) if word.lower() not in stop_words and word.isalpha()]
+        content_text = row['content']
+
+        processed_content = [word.lower() for word in word_tokenize(content_text) if word.lower() not in stop_words and word.isalpha()]
+
+        # Combine title and content for TF-IDF analysis
+        combined_text = ' '.join(processed_title + processed_content)
+        print('starting process ...')
+        # Fit vectorizer to combined text
+        vectorizer.fit([combined_text])
+
+        # Extract TF-IDF scores for the current article
+        tfidf_scores = vectorizer.transform([combined_text]).toarray()[0]
+        
+        print(tfidf_scores)
+        
+        # Get feature names (words)
+        feature_names = vectorizer.get_feature_names_out()
+
+        # Sort keywords by TF-IDF scores (descending order) and select top 5
+        top_keywords_title = [keyword for keyword, _ in sorted(zip(feature_names, tfidf_scores), key=lambda x: x[1], reverse=True)[:5]]
+        top_keywords_content = [keyword for keyword, _ in sorted(zip(feature_names, tfidf_scores), key=lambda x: x[1], reverse=True)[5:10]]
+
+        # Append top keywords to lists
+        title_keywords_list.append(top_keywords_title)
+        content_keywords_list.append(top_keywords_content)
+
+        # Calculate cosine similarity between title and content keywords
+        title_tfidf_scores = tfidf_scores[:5]
+        content_tfidf_scores = tfidf_scores[5:]
+        similarity = 1 - cosine(title_tfidf_scores, content_tfidf_scores)
+        similarity_list.append(similarity)
+
+    return title_keywords_list, content_keywords_list, similarity_list
