@@ -15,9 +15,12 @@ from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.spatial.distance import cosine
 
-import numpy as np
+#from bertopic import BERTopic
+import re
+from nltk.stem import WordNetLemmatizer
 
-
+nltk.download('stopwords')
+nltk.download('wordnet')
 
 
 
@@ -146,7 +149,16 @@ def website_sentiment_distribution(data):
 
 
 def keyword_extraction_and_analysis(news_data):
-    nltk.download('stopwords')
+
+    """
+        this function will perform key word extraction usig tf-idf
+        used 10 keyword accross header and title
+        and it needs to occur at least once on both header and content to be considered
+
+        min_words_threshold will limit the analysis for articles with at least 5 words
+        
+    """
+    #nltk.download('stopwords')
     # Define stop words (English in this example)
     stop_words = set(stopwords.words('english'))
 
@@ -196,12 +208,6 @@ def keyword_extraction_and_analysis(news_data):
         top_keywords_content = [keyword for keyword, _ in sorted(zip(feature_names, tfidf_scores), key=lambda x: x[1], reverse=True)[5:10]]
 
        
-
-       
-
-        
-
-
         if(len(tfidf_scores) >= 10):
 
              # Append top keywords to lists
@@ -222,5 +228,48 @@ def keyword_extraction_and_analysis(news_data):
             print('can not caluclate similarty on unbalanced keywords')
         
         
-
     return title_keywords_list, content_keywords_list, similarity_list
+
+
+#bert topic modeling
+# Define your own categories
+own_categories = {
+    0: 'Breaking News',
+    1: 'Politics',
+    2: 'World News',
+    3: 'Business/Finance',
+    4: 'Technology',
+    5: 'Science',
+    6: 'Health',
+    7: 'Entertainment',
+    8: 'Sports',
+    9: 'Environment',
+    10: 'Crime',
+    11: 'Education',
+    12: 'Weather',
+    
+}
+
+def clean_text(text):
+    clean_text = re.sub('<.*?>','',text)
+    clean_text = re.sub(r'[^\w\s]','',text)
+    return clean_text
+
+def preprocess_text(text):
+    #tokenization and removal of stop words
+    stop_words = set(stopwords.words('english'))
+    words = text.lower().split()
+    words = [word for word in text if word not in stop_words]
+
+    #lemmetize : meaning reducing the word to its root form
+    lemmetizer = WordNetLemmatizer()
+    words = [lemmetizer.lemmatize(word) for word in words]
+    return ' '.join(words)
+
+
+
+    
+
+    
+
+        
