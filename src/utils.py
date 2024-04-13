@@ -20,7 +20,7 @@ import re
 from nltk.stem import WordNetLemmatizer
 
 nltk.download('stopwords')
-nltk.download('wordnet')
+#nltk.download('wordnet')
 
 
 
@@ -36,6 +36,7 @@ def find_top_websites(data,url_column='url',top=10):
     domain_counts = data['domain'].value_counts()
 
     top_domains = domain_counts.head(top)
+    print(top_domains)
     return top_domains
 
 def find_high_traffic_websites(data,top=10):
@@ -98,7 +99,7 @@ def find_popular_articles(popular_countries_data):
     #since we have a lot of data we need to parallize the process
 
     # Maximum number of rows to process
-    max_rows = len(df)
+    max_rows = 100 #len(df)
     print(f'max rows is: {max_rows}')
     processed_count = 0
     # Apply function to each article in parallel with tqdm for progress bar
@@ -153,7 +154,7 @@ def keyword_extraction_and_analysis(news_data):
 
     """
         this function will perform key word extraction usig tf-idf
-        used 10 keyword accross header and title
+        used 10 keywords accross header and title
         and it needs to occur at least once on both header and content to be considered
 
         min_words_threshold will limit the analysis for articles with at least 5 words
@@ -256,16 +257,41 @@ def clean_text(text):
     clean_text = re.sub(r'[^\w\s]','',text)
     return clean_text
 
-def preprocess_text(text):
-    #tokenization and removal of stop words
-    stop_words = set(stopwords.words('english'))
-    words = text.lower().split()
-    words = [word for word in text if word not in stop_words]
+def remove_stop_words(text):
+  """
+  This function removes stop words from a text string.
 
-    #lemmetize : meaning reducing the word to its root form
-    lemmetizer = WordNetLemmatizer()
-    words = [lemmetizer.lemmatize(word) for word in words]
-    return ' '.join(words)
+  Args:
+      text: The text string to remove stop words from.
+
+  Returns:
+      A new string with the stop words removed.
+  """
+
+  # Download the stopwords list from NLTK (if not already downloaded)
+  nltk.download('stopwords')
+
+  # Split the text into words
+  words = text.lower().split()
+
+  # Remove stop words from the list of words
+  stop_words = nltk.corpus.stopwords.words('english')
+  filtered_words = [word for word in words if word not in stop_words]
+
+  # Join the filtered words back into a string
+  return " ".join(filtered_words)
+
+def preprocess_text(text):
+    print('hellow')
+    #tokenization and removal of stop words
+    # stop_words = set(stopwords.words('english'))
+    # words = text.lower().split()
+    # words = [word for word in text if word not in stop_words]
+
+    # #lemmetize : meaning reducing the word to its root form
+    # lemmetizer = WordNetLemmatizer()
+    # words = [lemmetizer.lemmatize(word) for word in words]
+    # return ' '.join(words)
 
 
 
